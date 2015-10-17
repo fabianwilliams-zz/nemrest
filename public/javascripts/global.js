@@ -22,6 +22,9 @@ $(document).ready(function() {
     // Delete User link click
     $('#userList table tbody').on('click', 'td a.linkdeleteuser', deleteUser);
 
+    //Edit User link Click
+    $('#userList table tbody').on('click', 'td a.linkedituser', showUserForEdit);
+
 
 });
 
@@ -45,7 +48,7 @@ function populateTable() {
             tableContent += '<tr>';
             tableContent += '<td><a href="#" class="linkshowuser" rel="' + this.username + '">' + this.username + '</a></td>';
             tableContent += '<td>' + this.email + '</td>';
-            tableContent += '<td><a href="#" class="linkedituser" rel="' + this._id + '">edit</a></td>';
+            tableContent += '<td><a href="#" class="linkedituser" rel="' + this.username + '">edit</a></td>';
             tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this._id + '">delete</a></td>';
             tableContent += '</tr>';
         });
@@ -176,3 +179,47 @@ function deleteUser(event) {
     }
 
 };
+
+
+// Show User For Edit
+function showUserForEdit(event) {
+
+    // Prevent Link from Firing
+    event.preventDefault();
+
+    // Pop up a confirmation dialog
+    var confirmation = confirm('Are you sure you want to Edit this user?' + $(this).attr('rel'));
+
+    // Check and make sure the user confirmed
+    if (confirmation === true) {
+        // Retrieve username from link rel attribute
+        var thisUserName = $(this).attr('rel');
+
+        // Get Index of object based on id value
+        var arrayPosition = userListData.map(function(arrayItem) {
+            return arrayItem.username;
+        }).indexOf(thisUserName);
+
+        // Get our User Object
+        var thisUserObject = userListData[arrayPosition];
+
+        //callout the User by name
+        var calloutUser = confirm('Current user  ' + thisUserObject.fullname);
+
+        //Populate Info Box
+        $('#editUserName').text(thisUserObject.username);
+        $('#editEmail').text(thisUserObject.email);
+        $('#userEditFullName').text(thisUserObject.fullname);
+        $('#userEditAge').text(thisUserObject.age);
+        $('#userEditGender').text(thisUserObject.gender);
+        $('#userEditLocation').text(thisUserObject.location);
+    }
+    else {
+        // If they said no to the confirm, do nothing
+        return false;
+    }
+
+
+
+};
+
