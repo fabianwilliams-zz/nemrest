@@ -204,15 +204,15 @@ function showUserForEdit(event) {
         var thisUserObject = userListData[arrayPosition];
 
         //callout the User by name
-        var calloutUser = confirm('Current user  ' + thisUserObject.fullname);
+        //var calloutUser = confirm('Current user  ' + thisUserObject.fullname);
 
         //Populate Info Box
-        $('#editUserName').text(thisUserObject.username);
-        $('#editEmail').text(thisUserObject.email);
-        $('#userEditFullName').text(thisUserObject.fullname);
-        $('#userEditAge').text(thisUserObject.age);
-        $('#userEditGender').text(thisUserObject.gender);
-        $('#userEditLocation').text(thisUserObject.location);
+        $('#editUserName').val(thisUserObject.username);
+        $('#editEmail').val(thisUserObject.email);
+        $('#userEditFullName').val(thisUserObject.fullname);
+        $('#userEditAge').val(thisUserObject.age);
+        $('#userEditGender').val(thisUserObject.gender);
+        $('#userEditLocation').val(thisUserObject.location);
     }
     else {
         // If they said no to the confirm, do nothing
