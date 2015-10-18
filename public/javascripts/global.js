@@ -25,6 +25,9 @@ $(document).ready(function() {
     //Edit User link Click
     $('#userList table tbody').on('click', 'td a.linkedituser', showUserForEdit);
 
+    // Update User button click
+    $('#btnUpdateUser').on('click', updateUser);
+
 
 });
 
@@ -107,7 +110,7 @@ function addUser(event) {
             'location': $('#addUser fieldset input#inputUserLocation').val(),
             'gender': $('#addUser fieldset input#inputUserGender').val()
         }
-
+        //var calloutUser = confirm('Payload Info: ' + newUser.fullname);
         // Use AJAX to post the object to our adduser service
         $.ajax({
             type: 'POST',
@@ -192,6 +195,7 @@ function showUserForEdit(event) {
 
     // Check and make sure the user confirmed
     if (confirmation === true) {
+
         // Retrieve username from link rel attribute
         var thisUserName = $(this).attr('rel');
 
@@ -213,13 +217,78 @@ function showUserForEdit(event) {
         $('#userEditAge').val(thisUserObject.age);
         $('#userEditGender').val(thisUserObject.gender);
         $('#userEditLocation').val(thisUserObject.location);
+
+        // Put the userID into the REL of the 'update user' block
+        $('#userEdit').attr('rel',thisUserObject._id);
+
+        //callout the User by ID
+        //var calloutUser = confirm('Current userID:  ' + thisUserObject._id);
     }
     else {
         // If they said no to the confirm, do nothing
         return false;
     }
 
-
-
 };
+
+// Update User
+function updateUser(event) {
+    event.preventDefault();
+
+    //callout the User by name
+    //var calloutUser = confirm('Update User Service Activated');
+
+    // Super basic validation - increase errorCount variable if any fields are blank
+    var errorCount = 0;
+    $('#userEdit input').each(function(index, val) {
+        if($(this).val() === '') { errorCount++; }
+    });
+
+    // Check and make sure errorCount's still at zero
+    if(errorCount === 0) {
+
+        // If it is, compile all user info into one object
+        var modifiedUser = {
+            'username': $('#userEdit fieldset input#editUserName').val(),
+            'email': $('#userEdit fieldset input#editEmail').val(),
+            'fullname': $('#userEdit fieldset input#userEditFullName').val(),
+            'age': $('#userEdit fieldset input#userEditAge').val(),
+            'location': $('#userEdit fieldset input#userEditLocation').val(),
+            'gender': $('#userEdit fieldset input#userEditGender').val()
+        }
+        //var calloutUser = confirm('Payload Info User -: ' + modifiedUser.fullname);
+        //console.log(modifiedUser);
+        // Use AJAX to post the object to our updateUser service
+        $.ajax({
+            type: 'PUT',
+            data: modifiedUser,
+            url: '/users/updateuser/' + $('#userEdit').attr('rel')
+        }).done(function( response ) {
+
+            // Check for successful (blank) response
+            if (response.msg === '') {
+
+                // Clear the form inputs
+                $('#userEdit fieldset input').val('');
+
+                // Update the table
+                populateTable();
+
+            }
+            else {
+
+                // If something goes wrong, alert the error message that our service returned
+                alert('Error: ' + response.msg);
+                //populateTable();
+
+            }
+        });
+    }
+    else {
+        // If errorCount is more than 0, error out
+        alert('Please fill in all Update fields');
+        return false;
+    }
+};
+
 

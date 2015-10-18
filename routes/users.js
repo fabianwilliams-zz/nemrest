@@ -26,6 +26,24 @@ router.post('/adduser', function(req, res) {
 });
 
 /*
+ * UPDATE/PUT to adduser.
+ */
+router.put('/updateuser/:id', function(req, res) {
+  var db = req.db
+  var collection = db.get('userlist');
+  var userToUpdate = req.params.id;
+  var firstParam = {'_id': userToUpdate};
+  var doc = { $set: req.body};
+  console.log('Doc Variable is: ' + doc);
+  console.log('User being updated is: ' + userToUpdate);
+  console.log('Request Body is: ' + req.body);
+  console.log('First Parameter is: ' + firstParam);
+  collection.update({'_id': userToUpdate}, doc ,function(err, result) {
+    res.send((result === 1) ? { msg: '' } : { msg:'error: ' + err });
+  });
+});
+
+/*
  * DELETE to deleteuser.
  */
 router.delete('/deleteuser/:id', function(req, res) {
